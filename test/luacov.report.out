@@ -1,147 +1,167 @@
-
 ==============================================================================
 ../src/split.lua
 ==============================================================================
-    	--- split: string split function and iterator for Lua
-    	--
-    	-- Peter Aronoff
-    	-- BSD 3-Clause License
-    	-- 2012-2016
-    	--
-    	-- There are many split functions for Lua. This is mine. Though, actually,
-    	-- I took lots of ideas and probably some code from the implementations on
-    	-- the Lua-Users Wiki, http://lua-users.org/wiki/SplitJoin.
-  75	local find = string.find
-  75	local fmt = string.format
-  75	local cut = string.sub
-  75	local gmatch = string.gmatch
-  75	local error = error
-    	
-    	--- Helper functions
-    	--
-    	-- Return a table composed of the individual characters from a string.
-    	local explode = function (str)
-  11	  local t = {}
-  44	  for i=1, #str do
-  33	    t[#t + 1] = cut(str, i, i)
-    	  end
-    	
-  11	  return t
-    	end
-    	
-    	--- split(string, delimiter) => { results }
-    	-- Return a table composed of substrings divided by a delimiter or pattern.
-    	local split = function (str, delimiter)
-    	  -- Handle an edge case concerning the str parameter. Immediately return an
-    	  -- empty table if str == ''.
- 198	  if str == '' then return {} end
-    	
-    	  -- Handle special cases concerning the delimiter parameter.
-    	  -- 1. If the pattern is nil, split on contiguous whitespace.
-    	  -- 2. If the pattern is an empty string, explode the string.
-    	  -- 3. Protect against patterns that match too much. Such patterns would hang
-    	  --    the caller.
- 187	  delimiter = delimiter or '%s+'
- 187	  if delimiter == '' then return explode(str) end
- 176	  if find('', delimiter, 1) then
-  22	    local msg = fmt('The delimiter (%s) would match the empty string.',
-  11	                    delimiter)
-  11	    error(msg)
-    	  end
-    	
-    	  -- The table `t` will store the found items. `s` and `e` will keep
-    	  -- track of the start and end of a match for the delimiter. Finally,
-    	  -- `position` tracks where to start grabbing the next match.
- 165	  local t = {}
-    	  local s, e
- 165	  local position = 1
- 165	  s, e = find(str, delimiter, position)
-    	
- 462	  while s do
- 297	    t[#t + 1] = cut(str, position, s-1)
- 297	    position = e + 1
- 297	    s, e = find(str, delimiter, position)
-    	  end
-    	
-    	  -- To get the (potential) last item, check if the final position is
-    	  -- still within the string. If it is, grab the rest of the string into
-    	  -- a final element.
- 165	  if position <= #str then
- 132	    t[#t + 1] = cut(str, position)
-    	  end
-    	
-    	  -- Special handling for a (potential) final trailing delimiter. If the
-    	  -- last found end position is identical to the end of the whole string,
-    	  -- then add a trailing empty field.
- 165	  if position > #str then
-  33	    t[#t + 1] = ''
-    	  end
-    	
- 165	  return t
-    	end
-    	
-    	--- spliterator(str, delimiter)
-    	local spliterator = function (str, delimiter)
-  87	  delimiter = delimiter or '%s+'
-  87	  if delimiter == '' then return gmatch(str, '.') end
-  76	  if find('', delimiter, 1) then
-  22	    local msg = fmt('The delimiter (%s) would match the empty string.',
-  11	                    delimiter)
-  11	    error(msg)
-    	  end
-    	
-    	  local s, e, subsection
-  65	  local position = 1
-    	  local iter = function ()
- 326	    if str == '' then return nil end
-    	
- 315	    s, e = find(str, delimiter, position)
- 315	    if s then
- 207	      subsection = cut(str, position, s-1)
- 207	      position = e + 1
- 207	      return subsection
- 108	    elseif position <= #str then
-  43	      subsection = cut(str, position)
-  43	      position = #str + 2
-  43	      return subsection
-  65	    elseif position == #str + 1 then
-  11	      position = #str + 2
-  11	      return ''
-    	    end
-    	  end
-    	
-  65	  return iter
-    	end
-    	
-  12	local version = function ()
-  18	  return '2.0.0-1'
-    	end
-    	
-  12	local author = function ()
-  18	  return 'Peter Aronoff'
-    	end
-    	
-    	local url = function ()
-   6	  return 'https://bitbucket.org/telemachus/split'
-    	end
-    	
-    	local license = function ()
-   6	  return 'BSD 3-Clause'
-    	end
-    	
-  63	return {
-  63	  split = split,
-  63	  spliterator = spliterator,
-  63	  version = version,
-  63	  author = author,
-  63	  url = url,
-  63	  license = license,
-  63	}
+    --- split: string split function and iterator for Lua
+    --
+    -- Peter Aronoff
+    -- BSD 3-Clause License
+    -- 2012-2016
+    --
+    -- There are many split functions for Lua. This is mine. Though, actually,
+    -- I took lots of ideas and probably some code from the implementations on
+    -- the Lua-Users Wiki, http://lua-users.org/wiki/SplitJoin.
+  8 local find = string.find
+  8 local fmt = string.format
+  8 local cut = string.sub
+  8 local gmatch = string.gmatch
+  8 local error = error
+
+    --- Helper functions
+    --
+    -- Return a table composed of the individual characters from a string.
+    local explode = function (str)
+  1   local t = {}
+  4   for i=1, #str do
+  3     t[#t + 1] = cut(str, i, i)
+      end
+
+  1   return t
+    end
+
+    --- split(string, delimiter) => { results }
+    -- Return a table composed of substrings divided by a delimiter or pattern.
+    local split = function (str, delimiter)
+      -- Handle an edge case concerning the str parameter. Immediately return an
+      -- empty table if str == ''.
+ 18   if str == '' then return {} end
+
+      -- Handle special cases concerning the delimiter parameter.
+      -- 1. If the pattern is nil, split on contiguous whitespace.
+      -- 2. If the pattern is an empty string, explode the string.
+      -- 3. Protect against patterns that match too much. Such patterns would hang
+      --    the caller.
+ 17   delimiter = delimiter or '%s+'
+ 17   if delimiter == '' then return explode(str) end
+ 16   if find('', delimiter, 1) then
+  2     local msg = fmt('The delimiter (%s) would match the empty string.',
+  1                     delimiter)
+  1     error(msg)
+      end
+
+      -- The table `t` will store the found items. `s` and `e` will keep
+      -- track of the start and end of a match for the delimiter. Finally,
+      -- `position` tracks where to start grabbing the next match.
+ 15   local t = {}
+      local s, e
+ 15   local position = 1
+ 15   s, e = find(str, delimiter, position)
+
+ 42   while s do
+ 27     t[#t + 1] = cut(str, position, s-1)
+ 27     position = e + 1
+ 27     s, e = find(str, delimiter, position)
+      end
+
+      -- To get the (potential) last item, check if the final position is
+      -- still within the string. If it is, grab the rest of the string into
+      -- a final element.
+ 15   if position <= #str then
+ 12     t[#t + 1] = cut(str, position)
+      end
+
+      -- Special handling for a (potential) final trailing delimiter. If the
+      -- last found end position is identical to the end of the whole string,
+      -- then add a trailing empty field.
+ 15   if position > #str then
+  3     t[#t + 1] = ''
+      end
+
+ 15   return t
+    end
+
+    --- each(str, delimiter)
+    local each = function (str, delimiter)
+  8   delimiter = delimiter or '%s+'
+  8   if delimiter == '' then return gmatch(str, '.') end
+  7   if find('', delimiter, 1) then
+  2     local msg = fmt('The delimiter (%s) would match the empty string.',
+  1                     delimiter)
+  1     error(msg)
+      end
+
+      local s, e, subsection
+  6   local position = 1
+      local iter = function ()
+ 30     if str == '' then return nil end
+
+ 29     s, e = find(str, delimiter, position)
+ 29     if s then
+ 19       subsection = cut(str, position, s-1)
+ 19       position = e + 1
+ 19       return subsection
+ 10     elseif position <= #str then
+  4       subsection = cut(str, position)
+  4       position = #str + 2
+  4       return subsection
+  6     elseif position == #str + 1 then
+  1       position = #str + 2
+  1       return ''
+        end
+      end
+
+  6   return iter
+    end
+
+    local first_and_rest = function(str, delimiter)
+ 15   delimiter = delimiter or '%s+'
+ 15   if delimiter == '' then return cut(str, 1, 1), cut(str, 2) end
+ 14   if find('', delimiter, 1) then
+  2     local msg = fmt('The delimiter (%s) would match the empty string.',
+  1                     delimiter)
+  1     error(msg)
+      end
+
+ 13   local s, e = find(str, delimiter)
+ 12   if s then
+ 10     return cut(str, 1, s - 1), cut(str, e + 1)
+      else
+  2     return str
+      end
+    end
+
+    local version = function ()
+  1   return '2.0.0-1'
+    end
+
+    local author = function ()
+  1   return 'Peter Aronoff'
+    end
+
+    local url = function ()
+  1   return 'https://bitbucket.org/telemachus/split'
+    end
+
+    local license = function ()
+  1   return 'BSD 3-Clause'
+    end
+
+  8 return {
+  8   split = split,
+  8   each = each,
+  8   spliterator = each,
+  8   first_and_rest = first_and_rest,
+  8   version = version,
+  8   author = author,
+  8   url = url,
+  8   license = license,
+  8 }
 
 ==============================================================================
 Summary
 ==============================================================================
 
-63	0	100.00%	../src/split.lua
-------------------------
-63	0	100.00%	
+File             Hits Missed Coverage
+-------------------------------------
+../src/split.lua 73   0      100.00%
+-------------------------------------
+Total            73   0      100.00%
