@@ -2,7 +2,7 @@
 --
 -- Peter Aronoff
 -- BSD 3-Clause License
--- 2012-2015
+-- 2012-2016
 --
 -- There are many split functions for Lua. This is mine. Though, actually,
 -- I took lots of ideas and probably some code from the implementations on
@@ -10,6 +10,7 @@
 local find = string.find
 local fmt = string.format
 local cut = string.sub
+local gmatch = string.gmatch
 local error = error
 
 --- Helper functions
@@ -53,7 +54,7 @@ local split = function (str, delimiter)
   s, e = find(str, delimiter, position)
 
   while s do
-    t[#t+1] = cut(str, position, s-1)
+    t[#t + 1] = cut(str, position, s-1)
     position = e + 1
     s, e = find(str, delimiter, position)
   end
@@ -69,7 +70,7 @@ local split = function (str, delimiter)
   -- last found end position is identical to the end of the whole string,
   -- then add a trailing empty field.
   if position > #str then
-    t[#t+1] = ''
+    t[#t + 1] = ''
   end
 
   return t
@@ -78,7 +79,7 @@ end
 --- spliterator(str, delimiter)
 local spliterator = function (str, delimiter)
   delimiter = delimiter or '%s+'
-  if delimiter == '' then delimiter = '.' end
+  if delimiter == '' then return gmatch(str, '.') end
   if find('', delimiter, 1) then
     local msg = fmt('The delimiter (%s) would match the empty string.',
                     delimiter)
@@ -87,7 +88,7 @@ local spliterator = function (str, delimiter)
 
   local s, e, subsection
   local position = 1
-  local function iter()
+  local iter = function ()
     if str == '' then return nil end
 
     s, e = find(str, delimiter, position)
@@ -108,11 +109,27 @@ local spliterator = function (str, delimiter)
   return iter
 end
 
+local version = function ()
+  return '2.0.0-1'
+end
+
+local author = function ()
+  return 'Peter Aronoff'
+end
+
+local url = function ()
+  return 'https://bitbucket.org/telemachus/split'
+end
+
+local license = function ()
+  return 'BSD 3-Clause'
+end
+
 return {
   split = split,
   spliterator = spliterator,
-  _VERSION = "1.0-0-1",
-  _AUTHOR = "Peter Aronoff",
-  _URL = "https://bitbucket.org/telemachus/split",
-  _LICENSE = 'BSD 3-Clause',
+  version = version,
+  author = author,
+  url = url,
+  license = license,
 }
