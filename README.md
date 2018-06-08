@@ -1,8 +1,8 @@
-# split [![Build Status](https://drone.io/bitbucket.org/telemachus/split/status.png)](https://drone.io/bitbucket.org/telemachus/split/latest) [![codecov.io](http://codecov.io/bitbucket/telemachus/split/coverage.svg?branch=master)](http://codecov.io/bitbucket/telemachus/split?branch=master)
+# split [![Build Status](https://travis-ci.org/telemachus/split.svg?branch=master)](https://travis-ci.org/telemachus/split) [![Coverage](https://codecov.io/gh/telemachus/split/branch/master/graph/badge.svg)](https://codecov.io/gh/telemachus/split)
 
 ## Synopsis
 
-A string `split` function and iterator for Lua sicne Lua's standard sting
+A string `split` function and iterator for Lua since Lua's standard sting
 library doesn't provide such a function. When working with text `split` is very
 useful, and [many people have written a version for Lua][wiki].
 
@@ -128,7 +128,7 @@ useful, and [many people have written a version for Lua][wiki].
 The module provides four informational functions that return strings. They
 should be self-explanatory.
 
-+ `version() -- 3.1.0`
++ `version() -- 3.2.0`
 
 + `author() -- Peter Aronoff`
 
@@ -151,7 +151,7 @@ All mistakes are mine. See [version history][c] for release details.
 
 ---
 
-(c) 2012-2016 Peter Aronoff. BSD 3-Clause license; see [LICENSE.md][li] for
+(c) 2012-2017 Peter Aronoff. BSD 3-Clause license; see [LICENSE.md][li] for
 details.
 
 [li]: /LICENSE.md

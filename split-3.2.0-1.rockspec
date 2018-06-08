@@ -1,16 +1,25 @@
+-- This file was automatically generated for the LuaDist project.
+
 package = 'split'
-version = '3.1.0-1'
+version = '3.2.0-1'
+-- LuaDist source
 source = {
-  url = 'https://bitbucket.org/telemachus/split/downloads/split-v3.1.0-1.tar.gz',
-  dir = 'split'
+  tag = "3.2.0-1",
+  url = "git://github.com/LuaDist-testing/split.git"
 }
+-- Original source
+-- source = {
+--   url = 'git://github.com/telemachus/split.git',
+--   branch = 'master',
+--   tag = 'v3.2.0-1'
+-- }
 description = {
     summary = 'String split function and iterator for Lua',
     detailed = [[
         A string split function and iterator for Lua since the string standard
         library doesn't come with one.
     ]],
-    homepage = 'https://bitbucket.org/telemachus/split',
+    homepage = 'https://github.com/telemachus/split',
     license = 'BSD 3-Clause',
     maintainer = 'Peter Aronoff <telemachus@arpinum.org>'
 }
